@@ -1,0 +1,659 @@
+Python Assignment - 7
+
+1. What is the name of the feature responsible for generating Regex objects?
+
+Sol: The re. compile() function returns Regex objects.
+
+   Regex applies a regular expression to a string and returns the matching substrings. 
+   The return type of regex depends on the capture groups, if any, in the pattern: If the pattern has no capture groups at all, 
+   the result is a single string covering the substring matched by the pattern as a whole.
+
+2. Why do raw strings often appear in Regex objects?
+
+Sol: Raw strings are often used in Regex objects in Python because they help avoid unintended escape sequences.
+     In Python, backslashes (\) are used as escape characters in regular strings. 
+
+     Raw strings help you get the "source code" of a RegEx safely to the RegEx parser, which will then assign meaning to character 
+     sequences like \d , \w , \n , etc.
+
+    The regular expression would be \d+\., but to use it as a regular string, you would need to escape the backslash like this: \\d+\\.. 
+    However, by using a raw string, you can write it as r"\d+\.", which is more readable.
+
+3. What is the return value of the search() method?
+
+Sol: The search() method in Python's regular expression module (re) returns a Match object if the pattern is found in the searched string, 
+     otherwise, it returns None. 
+
+  Eg - import re
+
+       pattern = r'\d+'  # This pattern matches one or more digits
+
+      # The string to search
+      text = "There are 123 apples and 456 bananas."
+
+      # Using search() to find the first match
+      match = re.search(pattern, text)
+
+    if match:
+       # Match found
+       print("Found match:", match.group())  # Output: Found match: 123
+       print("Start index:", match.start())  # Output: Start index: 10
+       print("End index:", match.end())      # Output: End index: 13
+       print("Span:", match.span())          # Output: Span: (10, 13)
+   else:
+       # No match found
+       print("No match found.")
+
+4. From a Match item, how do you get the actual strings that match the pattern?
+
+Sol: To get the actual strings that match the pattern from a Match object in Python, you can use the group() method. 
+     The group() method returns the substring that was matched by the regular expression pattern.
+
+    Eg - import re
+         pattern = r'(\d{2})-(\w{3})'  # This pattern matches two digits followed by a hyphen and three word characters
+
+       # The string to search
+       text = "42-Aug 73-Sep 99-Oct"
+
+       # Using findall() to find all matches and get the actual strings that match the pattern
+       matches = re.findall(pattern, text)
+
+       for match in matches:
+        print("Full match:", match[0])  # Output: Full match: 42, 73, 99
+        print("Month:", match[1])       # Output: Month: Aug, Sep, Oct
+
+
+5. In the regex which created from the '(\d\d\d)-(\d\d\d-\d\d\d\d)', what does group zero cover?
+   Group 2? Group 1?
+
+Sol: In the regex created from r'(\d\d\d)-(\d\d\d-\d\d\d\d)', the groups are defined by the parentheses in the regular expression pattern.
+     The groups are numbered based on the order of the opening parentheses from left to right.
+     The first capturing group, which matches three digits (e.g., 123 in the pattern (\d\d\d)).
+
+     The second capturing group, which matches three digits, followed by a hyphen, and then four more digits 
+     (e.g., 456-7890 in the pattern (\d\d\d-\d\d\d\d)).
+
+   Eg- import re
+       pattern = r'(\d\d\d)-(\d\d\d-\d\d\d\d)'
+
+      # The string to search
+      text = "123-456-7890"
+      match = re.search(pattern, text)
+
+      if match:
+       print("Full match:", match.group(0))  
+       print("Group 1:", match.group(1))    
+       print("Group 2:", match.group(2))
+ 
+      Output: Full match: 123-456-7890
+      Output: Group 1: 123
+      Output: Group 2: 456-7890
+
+6. In standard expression syntax, parentheses and intervals have distinct meanings. How can you tell
+   a regex that you want it to fit real parentheses and periods?
+
+Sol: Regex in Python that you want to match real parentheses ( and ) and periods ., you need to escape them using backslashes 
+     \. This applies to any special characters that we want to be treated literally rather than as regex metacharacters.
+
+   Eg - import re
+        # The string to search
+        text = "The value of (x) is 3.14."
+
+      # Define the regular expression pattern with escaped parentheses and period
+      pattern = r'\(x\)\s+is\s+(\d+\.\d+)'
+      match = re.search(pattern, text)
+
+     if match:
+       print("Found match:", match.group())       
+       print("Value of (x):", match.group(1)) 
+ 
+     Output: Found match: (x) is 3.14
+     Output: Value of (x): 3.14
+
+7. The findall() method returns a string list or a list of string tuples. What causes it to return one of
+   the two options?
+
+Sol: The findall() method in Python's regular expression module (re) returns a list of strings if the regular expression pattern has 
+     no capturing groups. It returns a list of tuples of strings if the pattern contains one or more capturing groups.
+   
+    findall() returns a list of strings containing all non-overlapping matches of the pattern in the input string.
+
+    findall() returns a list of tuples, where each tuple contains the matched substrings for each capturing group in the order they 
+    appear in the regular expression pattern.
+
+   Eg - import re
+        pattern_without_group = r'\d+'  # Matches one or more digits    
+        text = "42 apples and 73 bananas."
+
+        # Using findall() with a pattern without a capturing group
+        matches_without_group = re.findall(pattern_without_group, text)
+        print("Matches without group:", matches_without_group)
+
+        Output: Matches without group: ['42', '73']
+  
+        pattern_with_group = r'(\d+)\s+(\w+)'  # Matches one or more digits followed by one or more word characters
+
+       # Using findall() with a pattern containing capturing groups
+       matches_with_group = re.findall(pattern_with_group, text)
+       print("Matches with group:", matches_with_group)
+
+       Output: Matches with group: [('42', 'apples'), ('73', 'bananas')]
+
+8. In standard expressions, what does the | character mean?
+
+Sol:  In regular expressions, the | (vertical bar or pipe) character is used as the "OR" operator, which allows we
+      to create an alternative pattern. It functions similarly to the logical OR operator, representing a choice between
+      two or more expressions.
+
+
+   Eg - import re
+
+     # The string to search
+     text = "apple banana orange"
+
+    # Define the regular expression pattern with the OR operator (|)
+    pattern = r"apple|banana|orange"
+
+    # Using findall() with the pattern containing OR operator
+    matches = re.findall(pattern, text)
+    print(matches)
+
+    Output: ['apple', 'banana', 'orange']
+
+9. In regular expressions, what does the character stand for?
+
+Sol: In regular expressions, the meaning of a character depends on the character itself. 
+     Regular expressions are a powerful and concise way to define search patterns for text, allowing you to match specific 
+     sequences of characters in strings.
+
+
+  1. Literal Characters: Most characters in a regular expression simply represent themselves. For example, the character
+     'a' in a regex will match the letter 'a' in the input string.
+
+  2. Metacharacters: Certain characters have special meanings in regular expressions and are referred to as metacharacters.
+     Some common metacharacters include:
+
+   . (dot): Matches any single character except a newline.
+   *: Matches zero or more occurrences of the preceding character.
+
+  3. Quantifiers: Characters like *, +, and ? are known as quantifiers. They control the number of occurrences a character or 
+     group must have to match.
+
+10. In regular expressions, what is the difference between the + and * characters?
+
+Sol: 1. + (Plus Character):-
+
+    The + is a quantifier that matches one or more occurrences of the preceding character or group.
+    It requires the preceding character or group to appear at least once for a match to occur. If there are multiple
+    occurrences of the preceding character or group, it will match as many as possible (greedy matching).
+
+    2. * (Asterisk Character):-
+
+    The * is also a quantifier that matches zero or more occurrences of the preceding character or group.
+    It means the preceding character or group can appear zero times or any number of times in the input string. 
+    If there are multiple occurrences of the preceding character or group, it will match as many as possible (greedy matching).
+
+   Eg - import re
+        text = "aaa b aaab c ab aaaab"
+
+       # Using findall() with patterns containing + and *
+       matches_plus = re.findall(r'a+', text)
+       matches_asterisk = re.findall(r'a*', text)
+
+       print("Matches with +:", matches_plus)
+      
+       Output: ['aaa', 'aa', 'a', 'aaa']
+
+       print("Matches with *:", matches_asterisk)
+
+       Output: ['', 'aaa', '', '', 'aa', '', '', '', 'a', '', '', '', '', 'aaa', '', '', '', '', '']
+
+
+11. What is the difference between {4} and {4,5} in regular expression?
+
+Sol: 1. {4}:-
+     The {4} specifies exactly four occurrences of the preceding character or group.
+     It matches only if the preceding character or group appears exactly four times and not more or less.
+
+     2.{4,5}:-
+     The {4,5} specifies a range of occurrences, where the preceding character or group must appear at least four times but not more than five times.
+     It matches if the preceding character or group appears four times or five times
+
+   Eg - import re
+        text = "aaaa aa aaa aaaaa aaaaaa"
+
+       # Using findall() with patterns containing {4} and {4,5}
+       matches_exact = re.findall(r'a{4}', text)
+       matches_range = re.findall(r'a{4,5}', text)
+
+       print("Matches with {4}:", matches_exact)
+
+       Output: ['aaaa', 'aaaa']
+
+       print("Matches with {4,5}:", matches_range)
+
+       Output: ['aaaa', 'aaaaa', 'aaaaa']
+
+
+12. What do you mean by the \d, \w, and \s shorthand character classes signify in regular
+    expressions?
+
+Sol: 1. \d: This shorthand character class represents any digit character (0-9). It is equivalent to the character class [0-9]. It matches any single digit.
+
+     2. \w: This shorthand character class represents any word character. It includes all alphanumeric characters (a-z, A-Z, 0-9) and 
+            the underscore character (_). It is equivalent to the character class [a-zA-Z0-9_]. It matches any single word character.
+
+     3.\s: This shorthand character class represents any whitespace character, which includes spaces, tabs, and newlines. It is equivalent 
+           to the character class [\t\n\r\f\v ]. It matches any single whitespace character.
+
+     Eg- import re
+     text = "Hello, 123 world!\tNewline\nand underscore_ test."
+
+     # Using findall() with patterns containing \d, \w, and \s
+     digits = re.findall(r'\d', text)  # Find all digits
+     word_chars = re.findall(r'\w', text)  # Find all word characters
+     whitespace_chars = re.findall(r'\s', text)  # Find all whitespace characters
+
+     print("Digits:", digits)  # Output: ['1', '2', '3']
+     print("Word characters:", word_chars)  # Output: ['H', 'e', 'l', 'l', 'o', '1', '2', '3', 'w', 'o', 'r', 'l', 'd', 'N', 'e', 
+    'w', 'l', 'i', 'n', 'e', 'a', 'n', 'd', 'u', 'n', 'd', 'e', 'r', 's', 'c', 'o', 'r', 'e', '_', 't', 'e', 's', 't']
+     print("Whitespace characters:", whitespace_chars) 
+
+     Output: [' ', '\t', '\n', ' ', ' ', ' ']
+
+13. What do means by \D, \W, and \S shorthand character classes signify in regular expressions?
+
+Sol: 1. \D: This shorthand character class represents any character that is not a digit. It matches any single character that is not in the range 0-9. 
+        It is the negation of the \d shorthand character class.
+
+     2. \W: This shorthand character class represents any character that is not a word character. It matches any single character that is not an 
+        alphanumeric character (a-z, A-Z, 0-9) or an underscore (_). It is the negation of the \w shorthand character class.
+
+     3. \S: This shorthand character class represents any character that is not a whitespace character. It matches any single character that is not
+        a space, tab, newline, carriage return, form feed, or vertical tab. It is the negation of the \s shorthand character class.
+ 
+   Eg - import re
+        text = "Hello, 123 world!\tNewline\nand underscore_ test."
+
+      # Using findall() with patterns containing \D, \W, and \S
+      non_digits = re.findall(r'\D', text)  # Find all non-digits
+      non_word_chars = re.findall(r'\W', text)  # Find all non-word characters
+      non_whitespace_chars = re.findall(r'\S', text)  # Find all non-whitespace characters
+
+      print("Non-digits:", non_digits)  # Output: ['H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\t', 'N', 'e', 'w',
+     'l', 'i', 'n', 'e', '\n', 'a', 'n', 'd', ' ', 'u', 'n', 'd', 'e', 'r', 's', 'c', 'o', 'r', 'e', '_', ' ', 't', 'e', 's', 't', '.']
+      print("Non-word characters:", non_word_chars)  
+
+      Output: [',', ' ', '!', '\t', '\n', ' ', ' ', ' ', '.', '.']
+
+     print("Non-whitespace characters:", non_whitespace_chars)  
+
+    Output: ['H', 'e', 'l', 'l', 'o', ',', '1', '2', '3', 'w', 'o', 'r', 'l', 'd', '!', 'N', 'e', 'w', 'l', 'i', 'n', 'e', 'a', 'n', 
+   'd', '_', 't', 'e', 's', 't', '.']
+
+14. What is the difference between .*? and .*?
+
+Sol: 1. .*?: This is a non-greedy or lazy quantifier. It matches zero or more occurrences of any character (except a newline) 
+        but in a non-greedy manner. In other words, it matches as few characters as possible to allow the rest of the pattern to match.
+        It is used for non-greedy matching.
+
+     2. .*: This is a greedy quantifier. It also matches zero or more occurrences of any character (except a newline), but in a greedy manner. 
+        It matches as many characters as possible while still allowing the rest of the pattern to match.
+
+15. What is the syntax for matching both numbers and lowercase letters with a character class?
+
+Sol: To match both numbers and lowercase letters with a character class in Python regular expressions, we can use the \d shorthand for digits
+     and the [a-z] character range for lowercase letters.
+
+   Eg - # The string to search
+      text = "a1 b2 c3 d4 e5 F6 7G"
+
+      # Using findall() with a pattern containing a character class for numbers and lowercase letters
+      matches = re.findall(r'[a-z\d]', text)
+
+      print("Matches:", matches)
+  
+      Output: ['a', '1', 'b', '2', 'c', '3', 'd', '4', 'e', '5', '7', '6']
+
+16. What is the procedure for making a normal expression in regax case insensitive?
+
+Sol: To enable case-insensitive matching, you can use the re.IGNORECASE flag as the second argument to the re.compile() function or
+     as the second argument to the re.search(), re.findall(), re.finditer(), or any other re module function that supports flags.
+
+   Eg - import re
+        text = "Apple aPPLE ApPlE"
+       # Using re.IGNORECASE flag with re.findall() to create a case-insensitive regular expression
+        pattern = re.compile(r'apple', re.IGNORECASE)
+        matches = pattern.findall(text)
+
+        print("Matches:", matches)
+
+        Output: ['Apple', 'aPPLE', 'ApPlE']
+
+
+17. What does the . character normally match? What does it match if re.DOTALL is passed as 2nd
+argument in re.compile()?
+
+Sol: The . (dot) character normally matches any character except for a newline character (\n). It is a metacharacter known as the 
+     "dot metacharacter" or "wildcard character." The dot is used to represent any single character in the input string, allowing 
+     for flexible pattern matching.
+
+    The re.DOTALL (or re.S) flag is passed as the second argument to re.compile() or other re module functions, the behavior of the 
+    dot metacharacter changes. With the re.DOTALL flag, the dot will match any character, including newline characters.
+
+   Eg - import re
+        text = "Line 1\nLine 2"
+       # Using re.findall() with a pattern containing the dot without re.DOTALL
+        pattern_without_dotall = re.compile(r'Line .')
+        matches_without_dotall = pattern_without_dotall.findall(text)
+
+        print("Matches without DOTALL:", matches_without_dotall)
+   
+        Output: ['Line 1']
+
+        # Using re.findall() with a pattern containing the dot and re.DOTALL
+        pattern_with_dotall = re.compile(r'Line .', re.DOTALL)
+        matches_with_dotall = pattern_with_dotall.findall(text)
+
+        print("Matches with DOTALL:", matches_with_dotall)
+
+        Output: ['Line 1', 'Line 2']
+
+18. If numReg = re.compile(r'\d+'), what will numRegex.sub('X',',11 drummers, 10 pipers, five rings, 4
+hen') return?
+
+Sol: The re.sub() function in Python's re module is used for replacing occurrences of a pattern in a string with a specified replacement string. 
+     In this case, the pattern r'\d+' matches one or more digits, and the replacement string is 'X'.
+
+     1.',11 drummers, 10 pipers, five rings, 4 hen'
+         The pattern r'\d+' will match all occurrences of one or more digits in the string.
+    
+     2.',X drummers, X pipers, five rings, X hen'
+        All occurrences of digits have been replaced with 'X'.
+
+
+19.What does passing re.VERBOSE as the 2nd argument to re.compile() allow to do?
+
+Sol: Passing re.VERBOSE as the second argument to re.compile() in Python allows you to write more readable and well-structured regular expressions.
+     It enables the use of multi-line and commented regular expressions by ignoring whitespace and comments within the pattern.
+   
+     The re.VERBOSE flag, also known as the "verbose" or "extended" flag, is one of the re module's optional flags that can modify the behavior of 
+     regular expressions.
+
+    Eg -  import re
+          text = "John: 32, Mary: 28, Alice: 40"
+         # Regular expression without re.VERBOSE
+         pattern_without_verbose = re.compile(r'\w+: \d+')
+         matches_without_verbose = pattern_without_verbose.findall(text)
+
+         print("Matches without VERBOSE:", matches_without_verbose)
+  
+         Output: ['John: 32', 'Mary: 28', 'Alice: 40']
+
+         Regular expression with re.VERBOSE
+         pattern_with_verbose = re.compile(r'''
+        \w+      # Match one or more word characters
+        :        # Match a colon
+        \s*      # Match zero or more whitespace characters
+       \d+      # Match one or more digits
+       ''', re.VERBOSE)
+
+      matches_with_verbose = pattern_with_verbose.findall(text)
+
+     print("Matches with VERBOSE:", matches_with_verbose)
+
+     Output: ['John: 32', 'Mary: 28', 'Alice: 40']
+
+20. How would you write a regex that match a number with comma for every three digits? It must
+    match the given following:
+    '42'
+    '1,234'
+    '6,368,745'
+
+Sol: Eg - import re
+          pattern = r'^\d{1,3}(,\d{3})*$'
+
+          numbers = ['42', '1,234', '6,368,745']
+
+          for number in numbers:
+    if re.match(pattern, number):
+        print(f"'{number}' is a valid number.")
+    else:
+        print(f"'{number}' is not a valid number.")
+
+Output: '42' is a valid number.
+        '1,234' is a valid number.
+        '6,368,745' is a valid number.
+
+21. How would you write a regex that matches the full name of someone whose last name is
+    Watanabe? You can assume that the first name that comes before it will always be one word that
+    begins with a capital letter. The regex must match the following:
+    'Haruto Watanabe'
+    'Alice Watanabe'
+    'RoboCop Watanabe'
+     but not the following:
+    'haruto Watanabe' (where the first name is not capitalized)
+    'Mr. Watanabe' (where the preceding word has a nonletter character)
+    'Watanabe' (which has no first name)
+    'Haruto watanabe' (where Watanabe is not capitalized)
+
+Sol: Eg - import re
+          pattern = r'^[A-Z][a-zA-Z]*\sWatanabe$'
+
+         names = ['Haruto Watanabe', 'Alice Watanabe', 'RoboCop Watanabe',
+            'haruto Watanabe', 'Mr. Watanabe', 'Watanabe', 'Haruto watanabe']
+
+         for name in names:
+          if re.match(pattern, name):
+             print(f"'{name}' is a valid full name.")
+          else:
+            print(f"'{name}' is not a valid full name.")
+
+    ^: Start of the string anchor.
+   [A-Z]: Match a capital letter at the beginning of the name.
+   [a-zA-Z]*: Match zero or more lowercase or uppercase letters for the rest of the first name.
+   \s: Match a whitespace character (space) between the first and last names.
+   Watanabe: Match the last name "Watanabe".
+   $: End of the string anchor.
+
+Output:- 'Haruto Watanabe' is a valid full name.
+         'Alice Watanabe' is a valid full name.
+         'RoboCop Watanabe' is a valid full name.
+         'haruto Watanabe' is not a valid full name.
+         'Mr. Watanabe' is not a valid full name.
+         'Watanabe' is not a valid full name.
+         'Haruto watanabe' is not a valid full name.
+
+22. How would you write a regex that matches a sentence where the first word is either Alice, Bob,
+    or Carol; the second word is either eats, pets, or throws; the third word is apples, cats, or baseballs;
+    and the sentence ends with a period? This regex should be case-insensitive. It must match the
+    following:
+   'Alice eats apples.'
+   'Bob pets cats.'
+   'Carol throws baseballs.'
+   'Alice throws Apples.'
+   'BOB EATS CATS.'
+   but not the following:
+  'RoboCop eats apples.'
+  'ALICE THROWS FOOTBALLS.'
+  'Carol eats 7 cats.'
+
+Sol: import re
+     pattern = r'^(Alice|Bob|Carol)\s(eats|pets|throws)\s(apples|cats|baseballs)\.$'
+
+     sentences = [
+    'Alice eats apples.',
+    'Bob pets cats.',
+    'Carol throws baseballs.',
+    'Alice throws Apples.',
+    'BOB EATS CATS.',
+    'RoboCop eats apples.',
+    'ALICE THROWS FOOTBALLS.',
+    'Carol eats 7 cats.'
+    ]
+
+    for sentence in sentences:
+        if re.match(pattern, sentence, re.IGNORECASE):
+           print(f"'{sentence}' is a valid sentence.")
+        else:
+           print(f"'{sentence}' is not a valid sentence.")
+
+
+   ^: Start of the string anchor.
+   (Alice|Bob|Carol): Match one of the names "Alice", "Bob", or "Carol".
+   \s: Match a whitespace character (space) between the first and second words.
+   (eats|pets|throws): Match one of the verbs "eats", "pets", or "throws".
+   \s: Match a whitespace character (space) between the second and third words.
+   (apples|cats|baseballs): Match one of the nouns "apples", "cats", or "baseballs".
+   \.: Match a period (dot) at the end of the sentence.
+   $: End of the string anchor.
+
+  The re.IGNORECASE flag is used to perform a case-insensitive match, allowing the pattern to match names and verbs regardless of their letter case.
+  The re.match() function is used to check if the input string matches the pattern, and it will return True for valid sentences and False for invalid ones.
+
+  Output:- 'Alice eats apples.' is a valid sentence.
+           'Bob pets cats.' is a valid sentence.
+           'Carol throws baseballs.' is a valid sentence.
+           'Alice throws Apples.' is a valid sentence.
+           'BOB EATS CATS.' is a valid sentence.
+           'RoboCop eats apples.' is not a valid sentence.
+           'ALICE THROWS FOOTBALLS.' is not a valid sentence.
+           'Carol eats 7 cats.' is not a valid sentence.
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
